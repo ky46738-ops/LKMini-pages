@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎩 LKMini Pages</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0d0d0d;color:#e8e8e8;font-family:'Noto Sans TC',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;}
+h1{font-size:28px;color:#ffd700;margin-bottom:8px;}
+p{color:#888;font-size:14px;margin-bottom:32px;}
+.cards{display:flex;flex-direction:column;gap:16px;width:100%;max-width:400px;}
+.card{background:#161616;border:1px solid #2a2a2a;border-radius:16px;padding:20px;text-decoration:none;color:#e8e8e8;display:flex;align-items:center;gap:16px;transition:border-color .2s;}
+.card:hover,.card:active{border-color:#ffd700;}
+.card-icon{font-size:36px;flex-shrink:0;}
+.card-title{font-size:16px;font-weight:700;color:#ffd700;margin-bottom:4px;}
+.card-desc{font-size:13px;color:#888;}
+</style>
+</head>
+<body>
+<h1>🎩 LKMini Pages</h1>
+<p>Kevin Yang 的小工具集合</p>
+<div class="cards">
+  <a class="card" href="./tools/writing-class/">
+    <div class="card-icon">✏️</div>
+    <div>
+      <div class="card-title">mini 作文教室</div>
+      <div class="card-desc">聊天就能寫作文，小朋友的作文小幫手 ✨</div>
+    </div>
+  </a>
+  <a class="card" href="./vpoop/">
+    <div class="card-icon">💩</div>
+    <div>
+      <div class="card-title">VPoop Guardian</div>
+      <div class="card-desc">A==A 防偽系統</div>
+    </div>
+  </a>
+</div>
+</body>
+</html>
