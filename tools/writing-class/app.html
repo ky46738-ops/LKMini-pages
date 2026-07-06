@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>🎩 mini 作文教室</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="作文教室">
+<link rel="preconnect" href="https://api.fontshare.com">
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d0d0d;--surface:#161616;--surface2:#1e1e1e;--border:#2a2a2a;
+  --text:#e8e8e8;--muted:#888;--gold:#ffd700;--green:#4cff88;--blue:#5bc8ff;
+  --red:#ff6b6b;--radius:16px;
+  --font:'Noto Sans TC','Satoshi',sans-serif;
+}
+html,body{height:100%;overflow:hidden;}
+body{background:var(--bg);color:var(--text);font-family:var(--font);display:flex;flex-direction:column;}
+
+/* STATUS BAR */
+.status-bar{background:#0a1400;border-bottom:1px solid #2a3a00;padding:8px 16px;font-size:12px;color:var(--green);text-align:center;flex-shrink:0;}
+
+/* HEADER */
+.header{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 16px;display:flex;align-items:center;gap:12px;flex-shrink:0;}
+.header-avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#1a1400,#2a2000);border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.header-info h1{font-size:15px;font-weight:700;color:var(--gold);}
+.header-info p{font-size:12px;color:var(--muted);}
+.header-gear{margin-left:auto;background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;padding:4px;}
+
+/* CHAT AREA */
+.chat-area{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;}
+
+/* BUBBLES */
+.bubble-wrap{display:flex;gap:10px;align-items:flex-end;}
+.bubble-wrap.me{flex-direction:row-reverse;}
+.bubble-avatar{width:32px;height:32px;border-radius:50%;background:#1a1400;border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.bubble{max-width:75%;padding:10px 14px;border-radius:18px;font-size:14px;line-height:1.6;}
+.bubble.bot{background:var(--surface2);border:1px solid var(--border);border-bottom-left-radius:4px;color:var(--text);}
+.bubble.me{background:#1a3a00;border:1px solid #2a5a00;border-bottom-right-radius:4px;color:#c8ffb0;}
+.bubble .ts{font-size:10px;color:var(--muted);margin-top:4px;}
+
+/* TYPING INDICATOR */
+.typing{display:flex;gap:4px;padding:12px 16px;}
+.typing span{width:8px;height:8px;border-radius:50%;background:var(--muted);animation:bounce .8s infinite;}
+.typing span:nth-child(2){animation-delay:.15s;}
+.typing span:nth-child(3){animation-delay:.3s;}
+@keyframes bounce{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-6px)}}
+
+/* CHOICES */
+.choices{display:flex;flex-wrap:wrap;gap:8px;padding:0 16px 8px;}
+.choice-btn{background:var(--surface2);border:1px solid var(--border);border-radius:99px;padding:8px 16px;font-size:13px;color:var(--text);cursor:pointer;transition:all .2s;font-family:var(--font);}
+.choice-btn:hover,.choice-btn:active{background:#1a2a00;border-color:var(--gold);color:var(--gold);}
+
+/* INPUT */
+.input-area{background:var(--surface);border-top:1px solid var(--border);padding:12px 16px;padding-bottom:max(12px,env(safe-area-inset-bottom));display:flex;gap:10px;align-items:flex-end;flex-shrink:0;}
+.input-area textarea{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:10px 14px;font-size:14px;color:var(--text);resize:none;max-height:100px;font-family:var(--font);line-height:1.5;}
+.input-area textarea:focus{outline:none;border-color:var(--gold);}
+.send-btn{width:40px;height:40px;border-radius:50%;background:var(--gold);border:none;color:#000;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:900;}
+.send-btn:disabled{background:var(--border);color:var(--muted);cursor:default;}
+
+/* FINISH SCREEN */
+.finish-screen{display:none;flex-direction:column;align-items:center;justify-content:center;flex:1;padding:24px;text-align:center;}
+.finish-screen.show{display:flex;}
+.finish-icon{font-size:64px;margin-bottom:16px;}
+.finish-screen h2{font-size:20px;font-weight:900;color:var(--gold);margin-bottom:8px;}
+.finish-screen p{color:var(--muted);font-size:14px;margin-bottom:24px;}
+.finish-essay{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;width:100%;max-width:400px;text-align:left;margin-bottom:20px;}
+.finish-essay h3{font-size:13px;color:var(--gold);margin-bottom:12px;}
+.finish-essay .essay-line{font-size:14px;line-height:1.8;color:var(--text);}
+.export-btn{background:var(--gold);color:#000;border:none;border-radius:12px;padding:14px 28px;font-size:15px;font-weight:700;cursor:pointer;font-family:var(--font);}
+.restart-btn{background:none;border:1px solid var(--border);border-radius:12px;padding:12px 24px;font-size:14px;color:var(--muted);cursor:pointer;margin-top:10px;font-family:var(--font);}
+
+/* GEAR PANEL */
+.gear-panel{display:none;position:fixed;inset:0;background:#000a;z-index:100;align-items:flex-end;}
+.gear-panel.show{display:flex;}
+.gear-sheet{background:var(--surface);border-radius:24px 24px 0 0;padding:24px;width:100%;max-height:70vh;overflow-y:auto;}
+.gear-sheet h2{font-size:16px;font-weight:900;color:var(--gold);margin-bottom:16px;}
+.gear-close{float:right;background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;}
+.log-item{background:var(--surface2);border-radius:8px;padding:10px;margin-bottom:8px;font-size:12px;color:var(--muted);}
+.log-item strong{color:var(--text);}
+</style>
+</head>
+<body>
+
+<div class="status-bar">✅ 🎩 mini 精靈已連線 @LKMINIBOT</div>
+
+<div class="header">
+  <div class="header-avatar">🎩</div>
+  <div class="header-info">
+    <h1>mini 作文精靈</h1>
+    <p>聊天就能寫作文 ✨</p>
+  </div>
+  <button class="header-gear" onclick="toggleGear()">⚙️</button>
+</div>
+
+<div class="chat-area" id="chatArea"></div>
+<div class="choices" id="choicesArea"></div>
+
+<div class="input-area" id="inputArea" style="display:none;">
+  <textarea id="msgInput" placeholder="打字回答精靈..." rows="1"
+    oninput="autoResize(this)" onkeydown="handleKey(event)"></textarea>
+  <button class="send-btn" id="sendBtn" onclick="sendMsg()">↑</button>
+</div>
+
+<div class="finish-screen" id="finishScreen">
+  <div class="finish-icon">🎉</div>
+  <h2>你的作文寫完了！</h2>
+  <p>你剛剛聊的這些，就是一篇完整的作文囉！</p>
+  <div class="finish-essay" id="essayDisplay"></div>
+  <button class="export-btn" onclick="exportEssay()">📥 匯出我的作文（截圖）</button>
+  <button class="restart-btn" onclick="restart()">🔄 再寫一篇</button>
+</div>
+
+<!-- GEAR PANEL -->
+<div class="gear-panel" id="gearPanel" onclick="closeGear(event)">
+  <div class="gear-sheet">
+    <button class="gear-close" onclick="toggleGear()">✕</button>
+    <h2>🎩 老師專區</h2>
+    <div id="gearLog"><p style="color:var(--muted);font-size:13px;">還沒有對話紀錄</p></div>
+  </div>
+</div>
+
+<script>
+const TG_TOKEN = '8607480041:AAGRmDUqy3neID1ndA0EGaZgcMfTRVVH_5Y';
+const TG_CHAT  = '6527077650';
+
+let convo = [];
+let currentTopic = '';
+let step = 0;
+let answers = [];
+
+const topics = [
+  '我最喜歡的動物 🐾',
+  '一次難忘的出遊 🌟',
+  '我的好朋友 👫',
+  '讓我開心的一件事 😊',
+  '我最喜歡的食物 🍜',
+  '我的夢想 🌈'
+];
+
+const questions = [
+  q => `關於「${q}」，可以說說發生了什麼事嗎？`,
+  q => `你心裡有什麼感覺？或是你怎麼想的呢？`,
+  q => `最後結果怎麼樣？或是你希望以後怎麼樣？`
+];
+
+function now(){
+  return new Date().toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit'});
+}
+
+function addBubble(text, role='bot'){
+  const wrap = document.createElement('div');
+  wrap.className = `bubble-wrap${role==='me'?' me':''}`;
+  if(role==='bot'){
+    wrap.innerHTML = `<div class="bubble-avatar">🎩</div><div class="bubble bot">${text}<div class="ts">${now()}</div></div>`;
+  } else {
+    wrap.innerHTML = `<div class="bubble me">${text}<div class="ts">${now()}</div></div><div class="bubble-avatar">✏️</div>`;
+  }
+  document.getElementById('chatArea').appendChild(wrap);
+  wrap.scrollIntoView({behavior:'smooth',block:'end'});
+  convo.push({role, text});
+}
+
+function showTyping(cb, delay=1200){
+  const t = document.createElement('div');
+  t.className='bubble-wrap';
+  t.innerHTML='<div class="bubble-avatar">🎩</div><div class="typing"><span></span><span></span><span></span></div>';
+  document.getElementById('chatArea').appendChild(t);
+  t.scrollIntoView({behavior:'smooth',block:'end'});
+  setTimeout(()=>{ t.remove(); cb(); }, delay);
+}
+
+function showChoices(items, cb){
+  const area = document.getElementById('choicesArea');
+  area.innerHTML='';
+  items.forEach(item=>{
+    const btn = document.createElement('button');
+    btn.className='choice-btn';
+    btn.textContent = item;
+    btn.onclick = ()=>{ area.innerHTML=''; cb(item); };
+    area.appendChild(btn);
+  });
+}
+
+function showInput(){
+  document.getElementById('inputArea').style.display='flex';
+  setTimeout(()=>document.getElementById('msgInput').focus(),300);
+}
+
+function hideInput(){
+  document.getElementById('inputArea').style.display='none';
+}
+
+function autoResize(el){
+  el.style.height='auto';
+  el.style.height=Math.min(el.scrollHeight,100)+'px';
+}
+
+function handleKey(e){
+  if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); sendMsg(); }
+}
+
+function sendMsg(){
+  const val = document.getElementById('msgInput').value.trim();
+  if(!val) return;
+  document.getElementById('msgInput').value='';
+  document.getElementById('msgInput').style.height='auto';
+  addBubble(val,'me');
+  answers.push(val);
+  hideInput();
+  step++;
+  setTimeout(()=>nextStep(), 500);
+}
+
+function nextStep(){
+  if(step < 3){
+    showTyping(()=>{
+      addBubble(questions[step](currentTopic));
+      showInput();
+    });
+  } else {
+    finishWriting();
+  }
+}
+
+async function finishWriting(){
+  await sendToMini();
+  showTyping(()=>{
+    addBubble('哇！你剛剛聊的這些，就是一篇完整的作文囉！🎉 我幫你整理好了～');
+    setTimeout(()=>{
+      document.getElementById('chatArea').style.display='none';
+      document.getElementById('choicesArea').style.display='none';
+      document.getElementById('finishScreen').classList.add('show');
+      buildEssay();
+    }, 1000);
+  });
+}
+
+function buildEssay(){
+  const el = document.getElementById('essayDisplay');
+  el.innerHTML = `<h3>📝 題目：${currentTopic}</h3>` +
+    answers.map((a,i)=>`<div class="essay-line">${['①','②','③'][i]} ${a}</div>`).join('');
+}
+
+function exportEssay(){
+  const el = document.getElementById('essayDisplay');
+  const data = `📚 mini作文教室\n題目：${currentTopic}\n\n` +
+    answers.map((a,i)=>`${['①','②','③'][i]} ${a}`).join('\n\n');
+  const blob = new Blob([data], {type:'text/plain'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = '我的作文.txt';
+  a.click();
+}
+
+function restart(){
+  convo=[];answers=[];step=0;currentTopic='';
+  document.getElementById('chatArea').innerHTML='';
+  document.getElementById('chatArea').style.display='flex';
+  document.getElementById('choicesArea').style.display='flex';
+  document.getElementById('finishScreen').classList.remove('show');
+  hideInput();
+  startFlow();
+}
+
+async function sendToMini(){
+  const lines = convo.map(m=>(m.role==='bot'?'🎩精靈：':'✏️小朋友：')+m.text).join('\n');
+  const msg = `📚 作文教室紀錄\n題目：${currentTopic}\n─────────────\n${lines}\n─────────────\n⏰ ${new Date().toLocaleString('zh-TW')}`;
+  try {
+    await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`,{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({chat_id: TG_CHAT, text: msg})
+    });
+  } catch(e){ console.warn('TG 回流失敗',e); }
+}
+
+function toggleGear(){
+  const p = document.getElementById('gearPanel');
+  p.classList.toggle('show');
+  if(p.classList.contains('show')){
+    const log = document.getElementById('gearLog');
+    if(convo.length===0){
+      log.innerHTML='<p style="color:var(--muted);font-size:13px;">還沒有對話紀錄</p>';
+    } else {
+      log.innerHTML = convo.map(m=>`<div class="log-item"><strong>${m.role==='bot'?'🎩精靈':'✏️小朋友'}：</strong>${m.text}</div>`).join('');
+    }
+  }
+}
+
+function closeGear(e){ if(e.target===document.getElementById('gearPanel')) document.getElementById('gearPanel').classList.remove('show'); }
+
+function startFlow(){
+  showTyping(()=>{
+    addBubble('嗨！我是 mini 作文精靈 🎩 今天要一起來寫作文喔！');
+    showTyping(()=>{
+      addBubble('先選一個你今天想寫的題目吧～');
+      showChoices(topics, topic=>{
+        currentTopic = topic;
+        addBubble(topic,'me');
+        step=0; answers=[];
+        showTyping(()=>{
+          addBubble(`好棒的題目！那我們開始囉～\n${questions[0](topic)}`);
+          showInput();
+        });
+      });
+    },800);
+  });
+}
+
+startFlow();
+</script>
+</body>
+</html>
